@@ -12,8 +12,8 @@ router.get('/', async (req,res) => {
     }
 })
 //Get one
-router.get('/:id',(req,res) => {
-    res.send(req.params.id)
+router.get('/:id',getContact,(req,res) => {
+    res.send(res.contact)
 })
 //Create one
 router.post('/',async (req,res) => {
@@ -29,12 +29,42 @@ router.post('/',async (req,res) => {
     }
 })
 //Updating one
-router.patch('/',(req,res) => {
-
+router.patch('/:id',getContact,async (req,res) => {
+    if(req.body.name != null){
+        res.contact.name = req.body.name
+    }
+    if(req.body.contactNumber != null){
+        res.contact.contactNumber = req.body.contactNumber
+    }
+    try{
+        const updatedContact = await res.contact.save()
+        res.json({updatedContact})
+    }catch(err){
+        res.status(400).json({message: err.message})
+    }
 })
 //Deleting one
-router.delete('/',(req,res) => {
-
+router.delete('/:id',getContact, async(req,res) => {
+    try{
+        await res.contact.deleteOne()
+        res.json({message: 'Deleted Contact'})
+    }catch(err){
+        res.status(500).json({message: err.message})
+    }
 })
 
+//Middleware
+async function getContact(req,res,next) {
+    let contact
+    try{
+        contact = await Contact.findById(req.params.id)
+        if (contact == null){
+            res.status(404).json({message: 'Cannot find contact'})
+        }
+    }catch(err){
+        res.status(500).json({message: err.message})
+    }
+    res.contact = contact
+    next()
+}
 module.exports = router

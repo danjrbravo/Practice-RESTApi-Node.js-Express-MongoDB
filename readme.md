@@ -12,7 +12,7 @@ In order for this small API to work you need to create a .env file and fill it w
 <br><br>
 <b>GET:</b> localhost:3000/contacts/id
 <br>Returns specific contact by id
-<br><b>POST:</b> localhost:3000/contacts/
+<br><br><b>POST:</b> localhost:3000/contacts/
 <br>Creates a user, the JSON request needs to be in this format
 <pre>
     name: String(Change it to the name)
